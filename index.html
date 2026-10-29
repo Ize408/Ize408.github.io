@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Engr. Remuel Soriano: AI Engineer (LLM / RAG), PCB test automation and full-stack projects.">
+<title>Remuel Soriano Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,800;125,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an engineer's bench sheet. Oscilloscope graticule hero, a dated path, project "boards" on a grid, quiet credentials. */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --fg:#14202c; --muted:#56636f; --line:#d5dcdf;
+  --copper:#a8551f; --mask:#1d6b5f; --grid:#dfe6e4; --trace:#1d6b5f; --chip:#e9eeec;
+  --display:"Archivo", "Arial Narrow", Arial, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1519; --surface:#151f24; --fg:#e7ecec; --muted:#9aa8ad; --line:#26343a;
+  --copper:#e08a4e; --mask:#5fc0ab; --grid:#1c282d; --trace:#5fc0ab; --chip:#1c282e; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0e1519; --surface:#151f24; --fg:#e7ecec; --muted:#9aa8ad; --line:#26343a;
+  --copper:#e08a4e; --mask:#5fc0ab; --grid:#1c282d; --trace:#5fc0ab; --chip:#1c282e; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.6; margin:0;}
+.wrap{max-width:1080px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px));}
+a{color:var(--mask); text-underline-offset:3px}
+a:focus-visible, button:focus-visible{outline:2px solid var(--copper); outline-offset:3px; border-radius:4px}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; margin:0; line-height:1.1}
+.label{font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--copper)}
+section{padding-block:56px; border-top:1px solid var(--line)}
+section h2{font-size:clamp(26px,3.4vw,36px); font-weight:800; font-stretch:112%; margin-top:6px; margin-bottom:28px}
+
+/* top bar */
+.top{display:flex; justify-content:space-between; align-items:center; gap:16px; padding-block:18px; flex-wrap:wrap}
+.top .mark{font-family:var(--mono); font-size:13px; color:var(--muted)}
+.top nav{display:flex; gap:18px; flex-wrap:wrap; font-size:14px}
+.top nav a{color:var(--fg); text-decoration:none}
+.top nav a:hover{color:var(--copper)}
+
+/* hero */
+.hero{display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center; padding-block:36px 56px}
+.hero > *{min-width:0}
+.hero h1{font-size:clamp(38px,6vw,68px); font-weight:800; font-stretch:125%; letter-spacing:-.01em}
+.hero .creds{font-family:var(--mono); color:var(--copper); font-size:14px; margin-top:10px}
+.hero p.lead{font-size:clamp(17px,1.9vw,20px); color:var(--fg); max-width:34em; margin:20px 0 0}
+.hero p.lead em{font-style:normal; color:var(--mask); font-weight:600}
+.cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:26px}
+.btn{display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:6px; font-weight:600; font-size:15px; text-decoration:none; border:1px solid var(--fg); color:var(--fg); background:transparent; cursor:pointer; font-family:var(--body)}
+.btn.primary{background:var(--fg); color:var(--bg)}
+.btn:hover{border-color:var(--copper)}
+
+.scope{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px}
+.scope-head{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:8px; gap:8px; flex-wrap:wrap}
+.scope svg{display:block; width:100%; height:auto}
+.scope .gl{stroke:var(--grid); stroke-width:1}
+.scope .gl.c{stroke:var(--line)}
+.scope .tr{fill:none; stroke:var(--trace); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round}
+.scope .tr2{fill:none; stroke:var(--copper); stroke-width:2; stroke-dasharray:4 4}
+.scope text{font-family:var(--mono); font-size:10px; fill:var(--muted)}
+@media (prefers-reduced-motion: no-preference){
+  .scope .tr{stroke-dasharray:900; animation:draw 2.4s ease-out both}
+  @keyframes draw{from{stroke-dashoffset:900} to{stroke-dashoffset:0}}
+}
+
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:8px}
+.stat{background:var(--surface); padding:18px 18px 16px}
+.stat b{display:block; font-family:var(--display); font-weight:800; font-stretch:112%; font-size:30px; line-height:1; font-variant-numeric:tabular-nums}
+.stat span{display:block; color:var(--muted); font-size:14px; margin-top:8px}
+
+/* path */
+.path{list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(5,1fr); gap:0; position:relative}
+.path li{position:relative; padding:28px 16px 0 0; min-width:0}
+.path li::before{content:""; position:absolute; top:8px; left:0; right:0; height:2px; background:var(--line)}
+.path li::after{content:""; position:absolute; top:3px; left:0; width:12px; height:12px; border-radius:50%; background:var(--bg); border:2px solid var(--mask)}
+.path li.now::after{background:var(--copper); border-color:var(--copper)}
+.path .yr{font-family:var(--mono); font-size:13px; color:var(--muted)}
+.path h3{font-size:17px; font-weight:600; font-stretch:112%; margin:4px 0 6px}
+.path p{font-size:14px; color:var(--muted); margin:0}
+
+/* projects */
+.feature{display:grid; grid-template-columns:1fr 1fr; gap:32px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:28px; margin-bottom:24px}
+.feature > *{min-width:0}
+.feature h3{font-size:clamp(24px,2.8vw,30px); font-weight:800; font-stretch:112%; margin:8px 0 12px}
+.feature ul{padding-left:18px; margin:14px 0 0}
+.feature li{margin-bottom:6px}
+.pipe{display:flex; flex-direction:column; gap:10px}
+.node{border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:var(--bg)}
+.node .k{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--copper)}
+.node .v{font-size:14px; margin-top:2px}
+.arrow{font-family:var(--mono); color:var(--muted); text-align:center; font-size:13px; line-height:1}
+.eval{width:100%; border-collapse:collapse; font-size:14px; margin-top:4px; font-variant-numeric:tabular-nums}
+.eval th,.eval td{text-align:left; padding:6px 8px; border-bottom:1px solid var(--line)}
+.eval th{font-family:var(--mono); font-weight:500; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.note{font-size:13px; color:var(--muted); margin-top:8px}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px}
+.tags span{font-family:var(--mono); font-size:12px; background:var(--chip); color:var(--fg); padding:3px 8px; border-radius:4px}
+
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px; display:flex; flex-direction:column; min-width:0}
+.card h3{font-size:19px; font-weight:600; font-stretch:112%; margin:6px 0 8px}
+.card p{font-size:15px; color:var(--muted); margin:0}
+.card .metric{font-family:var(--display); font-weight:800; font-stretch:112%; font-size:26px; color:var(--mask); margin-top:14px; line-height:1}
+.card .metric small{display:block; font-family:var(--body); font-weight:400; font-size:13px; color:var(--muted); margin-top:4px}
+.card .tags{margin-top:auto; padding-top:14px}
+.card a.more{font-size:14px; margin-top:12px}
+
+/* skills */
+.skills{display:grid; grid-template-columns:repeat(3,1fr); gap:24px 32px}
+.skills div{min-width:0}
+.skills h3{font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--copper); margin-bottom:8px}
+.skills p{margin:0; font-size:15px}
+
+/* creds */
+.creds-list{display:grid; grid-template-columns:1fr 1fr; gap:0 40px; list-style:none; padding:0; margin:0}
+.creds-list li{display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); min-width:0}
+.creds-list li span:last-child{font-family:var(--mono); font-size:13px; color:var(--muted); white-space:nowrap}
+
+/* contact */
+.contact{display:grid; grid-template-columns:1.2fr 1fr; gap:32px; align-items:start}
+.contact > *{min-width:0}
+.contact p{font-size:18px; max-width:30em; margin:0}
+.links{display:flex; flex-direction:column; gap:10px}
+.row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface); flex-wrap:wrap}
+.row .k{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+.row .v{font-size:15px; word-break:break-all; user-select:all}
+.copy{font-family:var(--mono); font-size:12px; border:1px solid var(--line); background:transparent; color:var(--fg); border-radius:4px; padding:4px 8px; cursor:pointer}
+footer{padding-block:28px 40px; color:var(--muted); font-size:13px; font-family:var(--mono); border-top:1px solid var(--line)}
+
+@media (max-width:860px){
+  .hero,.feature,.contact{grid-template-columns:1fr}
+  .grid,.skills{grid-template-columns:1fr 1fr}
+  .path{grid-template-columns:1fr; gap:0}
+  .path li{padding:0 0 22px 28px}
+  .path li::before{top:0; bottom:0; left:5px; right:auto; width:2px; height:auto}
+  .path li::after{top:6px}
+  .creds-list{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .grid,.skills{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .feature{padding:20px}
+  .top nav{gap:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="mark">Ize408 · Parañaque, PH</div>
+    <nav aria-label="Sections">
+      <a href="#path">Path</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="label">AI Engineer · LLM / RAG · Test Automation</div>
+      <h1 style="margin-top:12px">Remuel Soriano</h1>
+      <div class="creds">Engr. · ECE · ECT</div>
+      <p class="lead">I'm an electronics engineer who builds software that understands hardware. I automate PCB testing at Toshiba, and I build <em>RAG assistants on Azure OpenAI</em>, machine learning services and full-stack web apps.</p>
+      <div class="cta">
+        <a class="btn primary" href="#work">See projects</a>
+        <a class="btn" href="https://github.com/Ize408" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/remuelsoriano/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div>
+      <figure class="scope" style="margin:0" aria-label="Oscilloscope-style chart of test time per board, before and after automation">
+        <div class="scope-head"><span>CH1 · test time per board</span><span>manual → automated</span></div>
+        <svg viewBox="0 0 400 220" role="img" aria-label="Test time drops by 90 percent after automation">
+          <g>
+            <line class="gl" x1="0" y1="22" x2="400" y2="22"/><line class="gl" x1="0" y1="66" x2="400" y2="66"/>
+            <line class="gl c" x1="0" y1="110" x2="400" y2="110"/><line class="gl" x1="0" y1="154" x2="400" y2="154"/>
+            <line class="gl" x1="0" y1="198" x2="400" y2="198"/>
+            <line class="gl" x1="40" y1="0" x2="40" y2="220"/><line class="gl" x1="120" y1="0" x2="120" y2="220"/>
+            <line class="gl c" x1="200" y1="0" x2="200" y2="220"/><line class="gl" x1="280" y1="0" x2="280" y2="220"/>
+            <line class="gl" x1="360" y1="0" x2="360" y2="220"/>
+          </g>
+          <line class="tr2" x1="0" y1="180" x2="400" y2="180"/>
+          <path class="tr" d="M0 40 L30 36 L50 44 L70 34 L90 42 L110 38 L130 46 L150 36 L170 42 L190 40 L200 40 C210 40 214 178 230 180 L250 178 L270 181 L290 179 L310 180 L330 178 L350 181 L370 179 L400 180"/>
+          <text x="8" y="30">100%</text>
+          <text x="8" y="172">10%</text>
+          <text x="208" y="16">automation →</text>
+        </svg>
+      </figure>
+      <div class="stats">
+        <div class="stat"><b>−90%</b><span>PCB testing time after automation</span></div>
+        <div class="stat"><b>Top 3</b><span>of 1,819 in the ECT Board Exam</span></div>
+        <div class="stat"><b>100%</b><span>right doc in top 3, RAG eval</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="path">
+  <div class="wrap">
+    <div class="label">The path</div>
+    <h2>From circuit boards to AI</h2>
+    <ol class="path">
+      <li><div class="yr">2019 – 2023</div><h3>BS Electronics Engineering</h3><p>Cum Laude, TUP-Manila. Thesis: an ML-controlled biodigester on a Raspberry Pi.</p></li>
+      <li><div class="yr">2024</div><h3>Licensed ECE &amp; ECT</h3><p>Top 3 of 1,819 examinees in the ECT Board Exam, with a 92% rating.</p></li>
+      <li><div class="yr">2024 – now</div><h3>PCB &amp; test automation</h3><p>Toshiba. Python tools that drive oscilloscopes and cut testing time by 90%.</p></li>
+      <li><div class="yr">Aug 2026</div><h3>Full-stack in production</h3><p>Built and launched a live booking platform on my own.</p></li>
+      <li class="now"><div class="yr">Now</div><h3>AI engineering</h3><p>RAG on Azure OpenAI and Azure AI Search, and the Azure AI Engineer path.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="label">Selected work</div>
+    <h2>Projects</h2>
+
+    <article class="feature">
+      <div>
+        <div class="label">Featured · LLM / RAG</div>
+        <h3>PCB RAG Assistant</h3>
+        <p>Ask questions about PCB datasheets and production test logs, and get answers with cited sources. "What's the absolute max VIN of the AX3318?" or "Why did board CB-24-00127 fail?"</p>
+        <ul>
+          <li>Hybrid keyword and vector search on Azure AI Search, so part numbers match exactly and plain questions match by meaning.</li>
+          <li>Every chunk is tagged with its document title and section; test logs are parsed into summaries before indexing.</li>
+          <li>Counting questions such as "which step fails most often?" go to a pandas statistics layer, because top-k retrieval can't count.</li>
+          <li>A strict prompt keeps absolute-maximum ratings apart from operating conditions and says so when the docs don't have the answer.</li>
+        </ul>
+        <div class="tags"><span>Azure OpenAI</span><span>Azure AI Search</span><span>gpt-4o-mini</span><span>FastAPI</span><span>pandas</span><span>pytest</span><span>GitHub Actions</span></div>
+        <p style="margin-top:16px"><a href="https://github.com/Ize408/pcb-rag-trial" target="_blank" rel="noopener">View the repo on GitHub →</a></p>
+      </div>
+      <div class="pipe" aria-label="How the assistant works">
+        <div class="node"><div class="k">Ingest</div><div class="v">Datasheets (PDF, Markdown) and 40 test logs → chunk, tag with title and section</div></div>
+        <div class="arrow">↓</div>
+        <div class="node"><div class="k">Index</div><div class="v">Embeddings from Azure OpenAI → Azure AI Search, or local BM25 for tests and CI</div></div>
+        <div class="arrow">↓</div>
+        <div class="node"><div class="k">Answer</div><div class="v">Top-k passages plus log statistics → gpt-4o-mini answers from context only, with [1] citations</div></div>
+        <div style="margin-top:8px">
+          <table class="eval">
+            <thead><tr><th>Eval set</th><th>Top 1</th><th>Top 3</th></tr></thead>
+            <tbody>
+              <tr><td>18 questions, datasheet wording</td><td>94%</td><td>100%</td></tr>
+              <tr><td>10 questions, paraphrased</td><td>90%</td><td>100%</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Right document retrieved, local BM25, on a synthetic sample set I wrote. Small and optimistic by design; a larger independent set is next.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="grid">
+      <article class="card">
+        <div class="label">Toshiba · Test automation</div>
+        <h3>Automated PCB testing</h3>
+        <p>Turned a fully manual test process into Python desktop apps (Tkinter) that control oscilloscopes and lab instruments through PyVISA, with automatic data capture and pass/fail checks. Tests no longer wait on an operator or stop at the end of the workday.</p>
+        <div class="metric">−90%<small>testing time</small></div>
+        <div class="tags"><span>Python</span><span>PyVISA</span><span>Tkinter</span></div>
+      </article>
+      <article class="card">
+        <div class="label">Full-stack · Live</div>
+        <h3>Restorya Stays</h3>
+        <p>A booking platform for stays across the Philippines, built end to end on my own: guest, host and admin roles, overlap-safe bookings, live pricing, online payments with signed webhooks, reviews and an analytics dashboard.</p>
+        <div class="metric">54<small>commits in 3 months, solo</small></div>
+        <div class="tags"><span>React</span><span>Node.js</span><span>PostgreSQL</span><span>Docker</span></div>
+        <a class="more" href="https://new.restoryastays.com" target="_blank" rel="noopener">new.restoryastays.com →</a>
+      </article>
+      <article class="card">
+        <div class="label">ML · Azure</div>
+        <h3>Smart Home ML</h3>
+        <p>Next-day energy and room occupancy models served through FastAPI. Training runs as Azure ML jobs launched from GitHub Actions with OIDC. Trained on synthetic data, with noise added after an early 99.8% score looked too good.</p>
+        <div class="metric">R² 0.85 · 92%<small>energy fit · occupancy accuracy</small></div>
+        <div class="tags"><span>scikit-learn</span><span>FastAPI</span><span>Azure ML</span></div>
+        <a class="more" href="https://github.com/Ize408/smart-home-ml" target="_blank" rel="noopener">Repo →</a>
+      </article>
+      <article class="card">
+        <div class="label">ML · IoT</div>
+        <h3>Room Autopilot</h3>
+        <p>Turns off lights and AC in empty rooms and learns the temperature I actually like, on Home Assistant with ESP32 sensors. Includes guards against setpoint flicker and compressor short-cycling.</p>
+        <div class="metric">−56%<small>AC energy, in simulation</small></div>
+        <div class="tags"><span>Home Assistant</span><span>ESP32</span><span>ESPHome</span></div>
+        <a class="more" href="https://github.com/Ize408/smart-home-elec" target="_blank" rel="noopener">Repo →</a>
+      </article>
+      <article class="card">
+        <div class="label">ML · PCB</div>
+        <h3>AI PCB Test Predictor</h3>
+        <p>A Random Forest model that predicts PCB pass or fail from voltage, current, temperature and timing measurements, with a Streamlit dashboard.</p>
+        <div class="tags"><span>scikit-learn</span><span>Streamlit</span></div>
+        <a class="more" href="https://github.com/Ize408/ML_Trial" target="_blank" rel="noopener">Repo →</a>
+      </article>
+      <article class="card">
+        <div class="label">Thesis · Embedded ML</div>
+        <h3>Bioptimize</h3>
+        <p>A Raspberry Pi system that reads pH, gas, pressure and temperature sensors and uses a regression model to hold the pH that maximizes biogas, with cloud dashboards, an Android app and SMS alerts.</p>
+        <div class="tags"><span>Raspberry Pi</span><span>Python</span><span>ThingSpeak</span></div>
+        <a class="more" href="https://github.com/Ize408/Bioptimize" target="_blank" rel="noopener">Repo →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="label">Toolbox</div>
+    <h2>Skills</h2>
+    <div class="skills">
+      <div><h3>LLM &amp; RAG</h3><p>Azure OpenAI, Azure AI Search, embeddings, hybrid search, chunking, prompt engineering, retrieval evaluation</p></div>
+      <div><h3>Machine learning</h3><p>scikit-learn, pandas, NumPy, Jupyter, Azure Machine Learning, FastAPI model serving, Streamlit</p></div>
+      <div><h3>Test automation</h3><p>Python, PyVISA, Tkinter, oscilloscope and instrument control, pytest</p></div>
+      <div><h3>Web &amp; backend</h3><p>React, Tailwind CSS, Node.js, Express, REST APIs, JWT, PostgreSQL, SQLite</p></div>
+      <div><h3>Cloud &amp; DevOps</h3><p>Docker, Docker Compose, GitHub Actions, Git, Linux, Caddy, Nginx</p></div>
+      <div><h3>Hardware &amp; IoT</h3><p>PCB design and verification, Raspberry Pi, ESP32, ESPHome, Home Assistant, Arduino</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="credentials">
+  <div class="wrap">
+    <div class="label">Credentials</div>
+    <h2>Licenses and honors</h2>
+    <ul class="creds-list">
+      <li><span>Top 3, ECT Licensure Exam (92%)</span><span>PRC · 2024</span></li>
+      <li><span>Licensed Electronics Engineer (ECE)</span><span>PRC · 2024</span></li>
+      <li><span>Licensed Electronics Technician (ECT)</span><span>PRC · 2024</span></li>
+      <li><span>BS Electronics Engineering, Cum Laude</span><span>TUP-Manila · 2023</span></li>
+      <li><span>Azure AI Engineer learning path</span><span>In progress</span></li>
+      <li><span>Fortinet NSE 1–3</span><span>2023</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="label">Contact</div>
+    <h2>Let's talk</h2>
+    <div class="contact">
+      <p>I'm open to AI Engineer, ML Engineer and Python or full-stack roles, remote or in Metro Manila and Laguna.</p>
+      <div class="links">
+        <div class="row"><div><div class="k">Email</div><div class="v" id="email">remuel.amate.soriano@gmail.com</div></div><button class="copy" id="copy-email" type="button">Copy</button></div>
+        <div class="row"><div><div class="k">LinkedIn</div><div class="v"><a href="https://www.linkedin.com/in/remuelsoriano/" target="_blank" rel="noopener">linkedin.com/in/remuelsoriano</a></div></div></div>
+        <div class="row"><div><div class="k">GitHub</div><div class="v"><a href="https://github.com/Ize408" target="_blank" rel="noopener">github.com/Ize408</a></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Engr. Remuel A. Soriano · ECE, ECT · 2026</div>
+</footer>
+
+<script>
+document.getElementById('copy-email').addEventListener('click', function(){
+  var btn = this, text = document.getElementById('email').textContent;
+  function done(msg){ btn.textContent = msg; setTimeout(function(){ btn.textContent = 'Copy'; }, 1800); }
+  function fallback(){
+    var r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done('Selected');
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){ done('Copied'); }, fallback);
+    } else { fallback(); }
+  } catch(e){ fallback(); }
+});
+</script>
+</body>
+</html>
