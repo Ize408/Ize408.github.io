@@ -226,6 +226,42 @@ html, body{overflow-x:clip}
 .adjust div{display:grid; grid-template-columns:62px 1fr; align-items:center; gap:8px; padding:3px 0}
 .adjust b{position:relative; height:3px; border-radius:2px; background:var(--line)}
 .adjust i{position:absolute; top:50%; left:18%; width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:var(--cc); box-shadow:0 0 0 2px var(--surface)}
+/* booking */
+.book-lead{color:var(--muted); max-width:42em; margin:-12px 0 24px}
+.booker{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); gap:24px; align-items:start}
+.cal, .slots-wrap{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px}
+.cal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
+.cal-title{font-family:var(--display); font-weight:600; font-size:17px}
+.cal-nav{width:34px; height:34px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--fg); font-size:20px; line-height:1; cursor:pointer}
+.cal-nav:disabled{opacity:.3; cursor:default}
+.cal-dow, .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center}
+.cal-dow span{font-family:var(--mono); font-size:11px; color:var(--muted); padding:4px 0; text-transform:uppercase; letter-spacing:.06em}
+.cal-day{aspect-ratio:1; max-width:100%; border-radius:8px; border:1px solid transparent; background:transparent; color:var(--fg); font:500 14px var(--body); cursor:pointer; font-variant-numeric:tabular-nums; position:relative}
+.cal-day:hover:not(:disabled){border-color:var(--line); background:var(--chip)}
+.cal-day:disabled{color:var(--muted); opacity:.35; cursor:default}
+.cal-day.wknd:not(:disabled)::after{content:""; position:absolute; left:50%; bottom:5px; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--accent)}
+.cal-day.sel{background:var(--accent); color:#160803; border-color:var(--accent)}
+.cal-day.sel::after{background:#160803 !important}
+.cal-note{font-size:12.5px; color:var(--muted); margin:12px 0 0}
+.slots-head{font-family:var(--display); font-weight:600; font-size:17px; margin-bottom:12px}
+.slots{display:grid; grid-template-columns:repeat(auto-fill, minmax(104px,1fr)); gap:8px; max-height:236px; overflow:auto; padding-right:2px}
+.slot{border:1px solid var(--line); background:transparent; color:var(--fg); border-radius:8px; padding:8px 6px; font:500 14px var(--body); cursor:pointer; text-align:center}
+.slot small{display:block; font-size:11px; color:var(--muted); margin-top:2px}
+.slot:hover{border-color:var(--accent)}
+.slot.sel{background:var(--accent); border-color:var(--accent); color:#160803}
+.slot.sel small{color:#3a1607}
+.book-form{display:grid; gap:12px; margin-top:16px; border-top:1px solid var(--line); padding-top:16px}
+.picked{font-size:14px; color:var(--fg); background:var(--chip); border-radius:8px; padding:8px 12px}
+.frow{display:grid; gap:4px}
+.frow label{font-size:13px; color:var(--muted)}
+.frow .opt{opacity:.7}
+.frow input, .frow textarea, .frow select{width:100%; background:var(--bg); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:9px 11px; font:15px var(--body)}
+.frow input:focus, .frow textarea:focus, .frow select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:transparent}
+.book-form .btn{justify-self:start}
+.form-msg{margin:0; font-size:14px; color:var(--muted); min-height:1.2em}
+.form-msg.ok{color:#43d17a} .form-msg.err{color:#ff8a7a}
+.form-msg .copy{margin-left:6px}
+@media (max-width:860px){ .booker{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -233,7 +269,7 @@ html, body{overflow-x:clip}
   <div class="wrap top">
     <div class="logo">REMUEL<b>.</b></div>
     <nav aria-label="Sections">
-      <a href="#impact">Impact</a><a href="#path">Path</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
+      <a href="#impact">Impact</a><a href="#path">Path</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#book">Book a call</a><a href="#contact">Contact</a>
     </nav>
   </div>
   <div class="wrap stage">
@@ -418,6 +454,57 @@ html, body{overflow-x:clip}
       <li><span>Parañaque Science High School, With Honors</span><span>2013 – 2019</span></li>
       <li><span>Employee of the Month</span><span>Toshiba · Apr 2025</span></li>
     </ul>
+  </div>
+</section>
+
+<section id="book">
+  <div class="wrap">
+    <div class="label">Book a call</div>
+    <h2>Pick a time to talk</h2>
+    <p class="book-lead">I'm free on weekdays from 6:00 PM and all day on weekends, Philippine time. Choose a date and time, leave your details, and I'll confirm by email.</p>
+    <div class="booker">
+      <div class="cal" aria-label="Choose a date">
+        <div class="cal-head">
+          <button type="button" class="cal-nav" id="cal-prev" aria-label="Previous month">‹</button>
+          <div class="cal-title" id="cal-title"></div>
+          <button type="button" class="cal-nav" id="cal-next" aria-label="Next month">›</button>
+        </div>
+        <div class="cal-dow"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        <div class="cal-grid" id="cal-grid" role="grid"></div>
+        <p class="cal-note">Times are in Philippine time (UTC+8). <span id="tz-note"></span></p>
+      </div>
+      <div class="slots-wrap">
+        <div class="slots-head" id="slots-head">Choose a date first</div>
+        <div class="slots" id="slots" role="listbox" aria-label="Available times"></div>
+        <form class="book-form" id="book-form" hidden novalidate>
+          <div class="picked" id="picked"></div>
+          <div class="frow">
+            <label for="bk-name">Your name</label>
+            <input id="bk-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="frow">
+            <label for="bk-email">Email</label>
+            <input id="bk-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="frow">
+            <label for="bk-company">Company and role <span class="opt">(optional)</span></label>
+            <input id="bk-company" name="company" type="text" autocomplete="organization">
+          </div>
+          <div class="frow">
+            <label for="bk-msg">What would you like to talk about?</label>
+            <textarea id="bk-msg" name="message" rows="3"></textarea>
+          </div>
+          <div class="frow">
+            <label for="bk-where">Preferred call</label>
+            <select id="bk-where" name="where">
+              <option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Phone call</option>
+            </select>
+          </div>
+          <button type="submit" class="btn primary" id="bk-send">Request this time</button>
+          <p class="form-msg" id="bk-msg-out" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -727,6 +814,119 @@ document.getElementById('copy-email').addEventListener('click', function(){
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+/* Booking: pick a date and time (Philippine time), then send the request.
+   To get notified, create a free form at formspree.io and put its ID below.
+   Every request then arrives in your inbox. Until then, visitors get a ready-to-copy message instead. */
+(function(){
+  var FORMSPREE_ID = 'YOUR_FORM_ID';
+  var MY_EMAIL = 'remuel.amante.soriano@gmail.com';
+  var DAYS_AHEAD = 45;
+  /* weekdays 6:00 PM to 10:00 PM, weekends 9:00 AM to 9:00 PM, in 30-minute slots (PH time) */
+  function hoursFor(dow){ return (dow === 0 || dow === 6) ? [9, 21] : [18, 22]; }
+
+  var PH = 8 * 60;
+  var grid = document.getElementById('cal-grid'); if (!grid) return;
+  var title = document.getElementById('cal-title'), prev = document.getElementById('cal-prev'), next = document.getElementById('cal-next');
+  var slotsEl = document.getElementById('slots'), slotsHead = document.getElementById('slots-head');
+  var form = document.getElementById('book-form'), picked = document.getElementById('picked'), out = document.getElementById('bk-msg-out');
+  var viewerTz = (Intl.DateTimeFormat().resolvedOptions().timeZone) || '';
+  var viewerIsPH = new Date().getTimezoneOffset() === -PH;
+  if (!viewerIsPH && viewerTz) document.getElementById('tz-note').textContent = 'Your local time is shown under each slot.';
+
+  /* "today" in Philippine time */
+  function phNow(){ var d = new Date(); return new Date(d.getTime() + (d.getTimezoneOffset() + PH) * 60000); }
+  var today = phNow(); today.setHours(0,0,0,0);
+  var last = new Date(today); last.setDate(last.getDate() + DAYS_AHEAD);
+  var view = new Date(today.getFullYear(), today.getMonth(), 1);
+  var selDate = null, selSlot = null;
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  function fmt12(h, m){ var ap = h >= 12 ? 'PM' : 'AM', hh = h % 12 || 12; return hh + ':' + (m < 10 ? '0' : '') + m + ' ' + ap; }
+  function utcFor(d, h, m){ return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), h, m) - PH * 60000); }
+  function longDate(d){ return DOW[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear(); }
+
+  function renderCal(){
+    title.textContent = MONTHS[view.getMonth()] + ' ' + view.getFullYear();
+    prev.disabled = view <= new Date(today.getFullYear(), today.getMonth(), 1);
+    next.disabled = new Date(view.getFullYear(), view.getMonth() + 1, 1) > last;
+    grid.innerHTML = '';
+    var first = new Date(view), lead = first.getDay(), dim = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+    for (var i = 0; i < lead; i++) grid.appendChild(document.createElement('span'));
+    for (var day = 1; day <= dim; day++) {
+      var d = new Date(view.getFullYear(), view.getMonth(), day), b = document.createElement('button');
+      b.type = 'button'; b.className = 'cal-day' + ((d.getDay() === 0 || d.getDay() === 6) ? ' wknd' : '');
+      b.textContent = day; b.setAttribute('aria-label', longDate(d));
+      var open = d >= today && d <= last && slotsFor(d).length > 0;
+      b.disabled = !open;
+      if (selDate && d.getTime() === selDate.getTime()) { b.classList.add('sel'); b.setAttribute('aria-pressed', 'true'); }
+      (function(dd){ b.addEventListener('click', function(){ selDate = dd; selSlot = null; renderCal(); renderSlots(); }); })(d);
+      grid.appendChild(b);
+    }
+  }
+  function slotsFor(d){
+    var r = hoursFor(d.getDay()), list = [], cutoff = new Date(Date.now() + 2 * 3600000);
+    for (var h = r[0]; h < r[1]; h++) for (var m = 0; m < 60; m += 30) {
+      var u = utcFor(d, h, m);
+      if (u > cutoff) list.push({ h: h, m: m, utc: u });
+    }
+    return list;
+  }
+  function renderSlots(){
+    slotsEl.innerHTML = '';
+    if (!selDate) { slotsHead.textContent = 'Choose a date first'; form.hidden = true; return; }
+    slotsHead.textContent = longDate(selDate);
+    slotsFor(selDate).forEach(function(s){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'slot'; b.setAttribute('role', 'option');
+      b.innerHTML = fmt12(s.h, s.m) + (viewerIsPH ? '' : '<small>' + s.utc.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' your time</small>');
+      if (selSlot && selSlot.h === s.h && selSlot.m === s.m) { b.classList.add('sel'); b.setAttribute('aria-selected', 'true'); }
+      b.addEventListener('click', function(){ selSlot = s; renderSlots(); showForm(); });
+      slotsEl.appendChild(b);
+    });
+    if (!selSlot) form.hidden = true;
+  }
+  function summary(){ return longDate(selDate) + ', ' + fmt12(selSlot.h, selSlot.m) + ' (PH time)'; }
+  function showForm(){
+    picked.textContent = 'Requested time: ' + summary();
+    form.hidden = false; out.textContent = ''; out.className = 'form-msg';
+    var n = document.getElementById('bk-name'); if (n && !n.value) n.focus({ preventScroll: true });
+  }
+  prev.addEventListener('click', function(){ view = new Date(view.getFullYear(), view.getMonth() - 1, 1); renderCal(); });
+  next.addEventListener('click', function(){ view = new Date(view.getFullYear(), view.getMonth() + 1, 1); renderCal(); });
+
+  function fallback(text){
+    out.className = 'form-msg err';
+    out.innerHTML = 'The request couldn\'t be sent from this page. Please copy it and email it to <b>' + MY_EMAIL + '</b>. <button type="button" class="copy">Copy request</button>';
+    out.querySelector('.copy').addEventListener('click', function(){
+      var btn = this;
+      try { navigator.clipboard.writeText(text).then(function(){ btn.textContent = 'Copied'; }, function(){ btn.textContent = 'Select and copy the text above'; }); }
+      catch (e) { btn.textContent = 'Select and copy the text above'; }
+    });
+  }
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    function v(id){ return document.getElementById(id).value.trim(); }
+    var name = v('bk-name'), email = v('bk-email');
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      out.className = 'form-msg err'; out.textContent = 'Please enter your name and a valid email so I can confirm the call.'; return;
+    }
+    var data = { name: name, email: email, company: v('bk-company'), message: v('bk-msg'), call_type: document.getElementById('bk-where').value,
+      requested_time_ph: summary(), requested_time_utc: selSlot.utc.toISOString(), _subject: 'Call request: ' + summary() + ' from ' + name };
+    var text = 'Call request\nTime: ' + data.requested_time_ph + '\nName: ' + name + '\nEmail: ' + email + '\nCompany/role: ' + (data.company || '-') + '\nCall: ' + data.call_type + '\nTopic: ' + (data.message || '-');
+    if (!FORMSPREE_ID || FORMSPREE_ID === 'YOUR_FORM_ID') { fallback(text); return; }
+    var btn = document.getElementById('bk-send'); btn.disabled = true; btn.textContent = 'Sending…';
+    fetch('https://formspree.io/f/' + FORMSPREE_ID, { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function(r){ if (!r.ok) throw new Error('status ' + r.status);
+        out.className = 'form-msg ok'; out.textContent = 'Request sent for ' + summary() + '. I\'ll confirm by email.';
+        btn.textContent = 'Sent'; })
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Request this time'; fallback(text); });
+  });
+
+  renderCal(); renderSlots();
 })();
 </script>
 </body>
